@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E8C96B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#C9A84C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A07830;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B1426;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#162040;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Outer ring -->
+  <circle cx="100" cy="100" r="98" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="3"/>
+  <!-- Inner ring -->
+  <circle cx="100" cy="100" r="86" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+  <!-- Middle ring -->
+  <circle cx="100" cy="100" r="78" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" opacity="0.5"/>
+
+  <!-- Crown -->
+  <g transform="translate(100, 42)" fill="url(#goldGrad)">
+    <polygon points="-18,18 -18,0 -10,8 0,-4 10,8 18,0 18,18" />
+    <rect x="-18" y="18" width="36" height="4" rx="1"/>
+    <circle cx="-18" cy="0" r="3"/>
+    <circle cx="0" cy="-4" r="3"/>
+    <circle cx="18" cy="0" r="3"/>
+  </g>
+
+  <!-- Van silhouette -->
+  <g transform="translate(100, 108)" fill="url(#goldGrad)">
+    <!-- Van body -->
+    <rect x="-38" y="-14" width="76" height="22" rx="3"/>
+    <!-- Van roof -->
+    <path d="M-30,-14 L-26,-26 L24,-26 L30,-14 Z"/>
+    <!-- Windows -->
+    <rect x="-22" y="-24" width="14" height="9" rx="1" fill="#0B1426" opacity="0.8"/>
+    <rect x="-5" y="-24" width="14" height="9" rx="1" fill="#0B1426" opacity="0.8"/>
+    <rect x="12" y="-24" width="8" height="9" rx="1" fill="#0B1426" opacity="0.8"/>
+    <!-- Wheels -->
+    <circle cx="-22" cy="8" r="7" fill="#0B1426"/>
+    <circle cx="-22" cy="8" r="4" fill="url(#goldGrad)"/>
+    <circle cx="20" cy="8" r="7" fill="#0B1426"/>
+    <circle cx="20" cy="8" r="4" fill="url(#goldGrad)"/>
+    <!-- Headlight -->
+    <rect x="-40" y="-8" width="5" height="8" rx="1" fill="#E8C96B" opacity="0.9"/>
+  </g>
+
+  <!-- Laurel left -->
+  <g transform="translate(38, 100)" fill="none" stroke="url(#goldGrad)" stroke-width="1.2">
+    <path d="M0,0 C-8,-5 -10,-15 -5,-20"/>
+    <path d="M0,0 C-10,-2 -14,-12 -10,-18"/>
+    <path d="M0,0 C-8,5 -10,15 -5,20"/>
+    <path d="M0,0 C-10,2 -14,12 -10,18"/>
+    <ellipse cx="-7" cy="-17" rx="5" ry="3" transform="rotate(-30,-7,-17)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+    <ellipse cx="-11" cy="-15" rx="5" ry="3" transform="rotate(-50,-11,-15)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+    <ellipse cx="-7" cy="17" rx="5" ry="3" transform="rotate(30,-7,17)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+    <ellipse cx="-11" cy="15" rx="5" ry="3" transform="rotate(50,-11,15)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+  </g>
+  <!-- Laurel right -->
+  <g transform="translate(162, 100)" fill="none" stroke="url(#goldGrad)" stroke-width="1.2">
+    <path d="M0,0 C8,-5 10,-15 5,-20"/>
+    <path d="M0,0 C10,-2 14,-12 10,-18"/>
+    <path d="M0,0 C8,5 10,15 5,20"/>
+    <path d="M0,0 C10,2 14,12 10,18"/>
+    <ellipse cx="7" cy="-17" rx="5" ry="3" transform="rotate(30,7,-17)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+    <ellipse cx="11" cy="-15" rx="5" ry="3" transform="rotate(50,11,-15)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+    <ellipse cx="7" cy="17" rx="5" ry="3" transform="rotate(-30,7,17)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+    <ellipse cx="11" cy="15" rx="5" ry="3" transform="rotate(-50,11,15)" fill="url(#goldGrad)" stroke="none" opacity="0.7"/>
+  </g>
+
+  <!-- Text paths -->
+  <defs>
+    <path id="topArc" d="M 22,100 A 78,78 0 0,1 178,100"/>
+    <path id="bottomArc" d="M 28,110 A 76,76 0 0,0 172,110"/>
+  </defs>
+
+  <!-- Top text: PMS Shipping -->
+  <text font-family="Georgia, serif" font-size="13" fill="url(#goldGrad)" font-weight="bold" letter-spacing="3">
+    <textPath href="#topArc" startOffset="10%">PMS SHIPPING</textPath>
+  </text>
+
+  <!-- Bottom text: VAN PRESTIGE SERVICE -->
+  <text font-family="Georgia, serif" font-size="9.5" fill="url(#goldGrad)" letter-spacing="1.5">
+    <textPath href="#bottomArc" startOffset="5%">VAN PRESTIGE SERVICE</textPath>
+  </text>
+
+  <!-- Ribbon banner: LUXURY TRANSPORT -->
+  <g transform="translate(100, 148)">
+    <path d="M-48,-8 L-44,0 L-48,8 L48,8 L44,0 L48,-8 Z" fill="#C9A84C" opacity="0.9"/>
+    <text x="0" y="4" font-family="Georgia, serif" font-size="8" fill="#0B1426" text-anchor="middle" font-weight="bold" letter-spacing="2">LUXURY TRANSPORT</text>
+  </g>
+</svg>

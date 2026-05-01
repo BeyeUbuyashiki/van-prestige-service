@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Van Prestige Service – Location Mercedes Van de luxe avec chauffeur privé. Transfert aéroport, voyages VIP au Sénégal."/>
+  <title>Van Prestige Service | Luxury Transport</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg"/>
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.svg" alt="Van Prestige Service Logo"/>
+    <div class="nav-logo-text">
+      <div class="nav-logo-name">Van Prestige Service</div>
+      <div class="nav-logo-sub">Luxury Transport</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#van">Notre Van</a></li>
+    <li><a href="#pourquoi">Pourquoi Nous</a></li>
+    <li><a href="#temoignages">Avis</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="/reservation.html" class="btn btn-gold nav-cta">Réserver</a>
+  <div class="nav-hamburger" id="hamburger" onclick="openMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="nav-mobile" id="navMobile">
+  <button class="nav-close" onclick="closeMenu()">✕</button>
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#van" onclick="closeMenu()">Notre Van</a>
+  <a href="#pourquoi" onclick="closeMenu()">Pourquoi Nous</a>
+  <a href="#temoignages" onclick="closeMenu()">Avis</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="/reservation.html" class="btn btn-gold" style="margin-top:1rem">Réserver</a>
+</div>
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ PMS Shipping — Van Prestige Service</div>
+    <h1 class="hero-title">Voyagez en<br/><span class="highlight">Première Classe</span><br/>sur Route</h1>
+    <p class="hero-subtitle">Découvrez le transport de prestige avec notre Mercedes Van Jetclass. Chauffeur privé, confort absolu et ponctualité irréprochable — partout au Sénégal.</p>
+    <div class="hero-tags">
+      <span class="hero-tag"><span class="hero-tag-dot"></span> Chauffeur Privé</span>
+      <span class="hero-tag"><span class="hero-tag-dot"></span> Transfert Aéroport</span>
+      <span class="hero-tag"><span class="hero-tag-dot"></span> Voyages VIP</span>
+      <span class="hero-tag"><span class="hero-tag-dot"></span> 24h/24 — 7j/7</span>
+    </div>
+    <div class="hero-actions">
+      <a href="/reservation.html" class="btn btn-gold"><span>📅</span> Réserver Maintenant</a>
+      <button class="btn btn-outline" onclick="openCheckModal()"><span>🔍</span> Vérifier ma Réservation</button>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="hero-scroll-line"></div><span>SCROLL</span></div>
+</section>
+<div class="stats-bar">
+  <div class="stat-item reveal"><div class="stat-number" data-target="500">0</div><div class="stat-label">Clients Satisfaits</div></div>
+  <div class="stat-item reveal reveal-delay-1"><div class="stat-number" data-target="3">0</div><div class="stat-label">Années d'Expérience</div></div>
+  <div class="stat-item reveal reveal-delay-2"><div class="stat-number" data-target="24">0</div><div class="stat-label">Heures Disponibles</div></div>
+  <div class="stat-item reveal reveal-delay-3"><div class="stat-number" data-target="7">0</div><div class="stat-label">Jours sur 7</div></div>
+</div>
+<section class="services" id="services">
+  <div class="services-header reveal">
+    <span class="section-label">✦ Ce que nous offrons</span>
+    <h2 class="section-title">Nos <span>Services</span> Exclusifs</h2>
+    <div class="divider center"></div>
+    <p class="section-sub" style="margin:0 auto;text-align:center">Une expérience de transport sur mesure, alliant luxe, confort et professionnalisme à chaque trajet.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal"><div class="service-icon">🎩</div><h3 class="service-title">Chauffeur Privé</h3><p class="service-desc">Un chauffeur professionnel à votre disposition. Élégant, discret et ponctuel, il adapte son service à vos exigences pour chaque déplacement.</p><a href="/reservation.html" class="service-link">Réserver →</a></div>
+    <div class="service-card reveal reveal-delay-1"><div class="service-icon">✈️</div><h3 class="service-title">Transfert Aéroport</h3><p class="service-desc">Arrivée ou départ, nous assurons votre transfert avec suivi de vol en temps réel. Aucun stress, juste le confort de notre Mercedes Van Jetclass.</p><a href="/reservation.html" class="service-link">Réserver →</a></div>
+    <div class="service-card reveal reveal-delay-2"><div class="service-icon">👑</div><h3 class="service-title">Voyages VIP</h3><p class="service-desc">Événements d'entreprise, sorties privées, mariages — nous assurons vos déplacements VIP avec une discrétion et une élégance absolues.</p><a href="/reservation.html" class="service-link">Réserver →</a></div>
+  </div>
+</section>
+<section class="van-showcase" id="van">
+  <div class="van-showcase-inner">
+    <div class="van-info reveal">
+      <span class="section-label">✦ Notre Flotte</span>
+      <h2 class="section-title">Mercedes Van<br/><span>Jetclass</span></h2>
+      <div class="divider"></div>
+      <p class="section-sub">Le summum du confort sur route. Notre Mercedes Classe V Jetclass est aménagé avec des sièges captain en cuir pleine fleur, éclairage ambiant et système multimédia de dernière génération.</p>
+      <div class="van-specs">
+        <div class="van-spec"><div class="van-spec-value">7</div><div class="van-spec-label">Passagers Max</div></div>
+        <div class="van-spec"><div class="van-spec-value">VIP</div><div class="van-spec-label">Intérieur Cuir</div></div>
+        <div class="van-spec"><div class="van-spec-value">4G</div><div class="van-spec-label">WiFi à Bord</div></div>
+        <div class="van-spec"><div class="van-spec-value">❄️</div><div class="van-spec-label">Climatisation</div></div>
+      </div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="/reservation.html" class="btn btn-gold">Réserver ce Van</a>
+        <button class="btn btn-outline" onclick="document.getElementById('van-detail').scrollIntoView({behavior:'smooth'})">Voir détails</button>
+      </div>
+    </div>
+    <div class="van-image-wrap reveal reveal-delay-1">
+      <div class="van-image-main">
+        <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=85" alt="Mercedes Van Jetclass" onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=85'"/>
+      </div>
+      <div class="van-image-badge"><div class="van-image-badge-num">★ 5</div><div class="van-image-badge-text">SERVICE VIP</div></div>
+      <div class="van-gallery" id="van-detail" style="margin-top:2.5rem">
+        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=80" alt="Intérieur" onerror="this.style.background='#1a2d4f'"/>
+        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&q=80" alt="Aéroport" onerror="this.style.background='#1a2d4f'"/>
+        <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80" alt="Cuir" onerror="this.style.background='#1a2d4f'"/>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="why-us" id="pourquoi">
+  <div class="why-us-header reveal"><span class="section-label">✦ Notre Engagement</span><h2 class="section-title">Pourquoi Choisir<br/><span>Van Prestige Service ?</span></h2><div class="divider center"></div></div>
+  <div class="why-grid">
+    <div class="why-card reveal"><div class="why-icon">⏱️</div><h3 class="why-title">Ponctualité Garantie</h3><p class="why-desc">Votre temps est précieux. Nous sommes toujours à l'heure, quoi qu'il arrive.</p></div>
+    <div class="why-card reveal reveal-delay-1"><div class="why-icon">🛡️</div><h3 class="why-title">Sécurité Maximale</h3><p class="why-desc">Chauffeurs certifiés, véhicule régulièrement entretenu et assuré tous risques.</p></div>
+    <div class="why-card reveal reveal-delay-2"><div class="why-icon">💎</div><h3 class="why-title">Luxe & Confort</h3><p class="why-desc">Intérieur VIP, boissons, Wi-Fi — chaque détail pensé pour votre bien-être.</p></div>
+    <div class="why-card reveal reveal-delay-3"><div class="why-icon">📞</div><h3 class="why-title">Disponible 24h/24</h3><p class="why-desc">Notre équipe est joignable à toute heure pour votre confort et votre tranquillité.</p></div>
+  </div>
+</section>
+<div class="booking-cta reveal">
+  <div class="booking-cta-text"><span class="section-label">✦ Prêt à Voyager ?</span><h2 class="section-title">Réservez Votre Trajet<br/><span>en 2 Minutes</span></h2></div>
+  <div class="booking-cta-actions"><a href="/reservation.html" class="btn btn-gold">📅 Réserver en Ligne</a><a href="tel:+221776044140" class="btn btn-outline">📞 +221 77 604 41 40</a></div>
+</div>
+<section class="testimonials" id="temoignages">
+  <div class="testimonials-header reveal"><span class="section-label">✦ Ce que disent nos clients</span><h2 class="section-title">Ils Nous Font<br/><span>Confiance</span></h2><div class="divider center"></div></div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text">"Service impeccable lors de notre transfert aéroport. Le chauffeur était ponctuel, le van magnifique. Une expérience vraiment VIP du début à la fin."</p><div class="testimonial-author"><div class="testimonial-avatar">A</div><div><div class="testimonial-name">Amadou Diallo</div><div class="testimonial-location">Dakar, Sénégal</div></div></div></div>
+    <div class="testimonial-card reveal reveal-delay-1"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text">"Nous avons utilisé Van Prestige Service pour notre mariage. Tout était parfait — élégance, professionnalisme et discrétion absolue. Je recommande vivement !"</p><div class="testimonial-author"><div class="testimonial-avatar">F</div><div><div class="testimonial-name">Fatou Ndiaye</div><div class="testimonial-location">Saint-Louis, Sénégal</div></div></div></div>
+    <div class="testimonial-card reveal reveal-delay-2"><div class="testimonial-stars">★★★★★</div><p class="testimonial-text">"Pour nos déplacements d'affaires, Van Prestige Service est notre choix numéro 1. Fiable, luxueux, et le système de réservation en ligne est très simple."</p><div class="testimonial-author"><div class="testimonial-avatar">M</div><div><div class="testimonial-name">Moussa Sow</div><div class="testimonial-location">Thiès, Sénégal</div></div></div></div>
+  </div>
+</section>
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left reveal">
+      <span class="section-label">✦ Contactez-nous</span>
+      <h2 class="section-title" style="font-size:2rem">Parlons de Votre<br/><span>Prochain Trajet</span></h2>
+      <div class="divider"></div>
+      <div class="contact-items">
+        <div class="contact-item"><div class="contact-icon">📞</div><div><div class="contact-item-label">Téléphone</div><div class="contact-item-value">+221 77 604 41 40</div></div></div>
+        <div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-item-label">Localisation</div><div class="contact-item-value">Dakar, Sénégal</div></div></div>
+        <div class="contact-item"><div class="contact-icon">🕐</div><div><div class="contact-item-label">Disponibilité</div><div class="contact-item-value">24h/24 — 7 jours sur 7</div></div></div>
+      </div>
+      <div class="contact-socials">
+        <a href="https://wa.me/221776044140" target="_blank" class="social-btn">💬</a>
+        <a href="tel:+221776044140" class="social-btn">📞</a>
+        <a href="#" class="social-btn">📘</a>
+        <a href="#" class="social-btn">📸</a>
+      </div>
+    </div>
+    <div class="contact-right reveal reveal-delay-1">
+      <div class="contact-form">
+        <h3 class="contact-form-title">Envoyez-nous un message</h3>
+        <form id="contactForm">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group"><label>Prénom</label><input type="text" placeholder="Votre prénom" required/></div>
+            <div class="form-group"><label>Nom</label><input type="text" placeholder="Votre nom" required/></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" placeholder="votre@email.com" required/></div>
+          <div class="form-group"><label>Téléphone</label><input type="tel" placeholder="+221 XX XXX XX XX"/></div>
+          <div class="form-group"><label>Message</label><textarea placeholder="Décrivez votre besoin..."></textarea></div>
+          <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center">Envoyer le Message ✉️</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:1rem"><img src="/images/logo.svg" alt="Logo" style="width:48px;height:48px"/><div class="nav-logo-text"><div class="nav-logo-name">Van Prestige Service</div><div class="nav-logo-sub">PMS Shipping • Luxury Transport</div></div></div>
+      <p class="footer-brand-desc">Transport de luxe avec chauffeur privé au Sénégal. Mercedes Van Jetclass pour vos déplacements VIP, transferts aéroport et voyages d'affaires.</p>
+    </div>
+    <div><h4 class="footer-col-title">Navigation</h4><ul class="footer-links"><li><a href="#services">Services</a></li><li><a href="#van">Notre Van</a></li><li><a href="#pourquoi">Pourquoi Nous</a></li><li><a href="#temoignages">Avis Clients</a></li></ul></div>
+    <div><h4 class="footer-col-title">Services</h4><ul class="footer-links"><li><a href="/reservation.html">Chauffeur Privé</a></li><li><a href="/reservation.html">Transfert Aéroport</a></li><li><a href="/reservation.html">Voyages VIP</a></li><li><a href="/reservation.html">Événements</a></li></ul></div>
+    <div><h4 class="footer-col-title">Contact</h4><ul class="footer-links"><li><a href="tel:+221776044140">+221 77 604 41 40</a></li><li><a href="#">Dakar, Sénégal</a></li><li><a href="https://wa.me/221776044140">WhatsApp</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p class="footer-copy">© 2024 <span>Van Prestige Service</span> — PMS Shipping. Tous droits réservés.</p><p class="footer-copy">Conçu avec ❤️ pour le <span>luxe</span></p></div>
+</footer>
+<div class="modal-overlay" id="checkModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeCheckModal()">✕</button>
+    <h3 style="font-family:var(--font-heading);font-size:1.5rem;margin-bottom:.5rem">Vérifier ma Réservation</h3>
+    <p style="color:var(--gray);font-size:.9rem;margin-bottom:1.5rem">Entrez votre référence de réservation</p>
+    <div class="form-group"><label>Référence</label><input type="text" id="checkRef" placeholder="ex: VPS-20240501-ABCDE" style="font-family:var(--font-body)"/></div>
+    <button onclick="checkReservation()" class="btn btn-gold" style="width:100%;justify-content:center;margin-top:.5rem">Vérifier →</button>
+    <div id="checkResult" style="margin-top:1.5rem;display:none"></div>
+  </div>
+</div>
+<div id="toast-container"></div>
+<script src="/js/main.js"></script>
+</body>
+</html>

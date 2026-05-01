@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Connexion Admin – Van Prestige Service</title>
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg"/>
+  <link rel="stylesheet" href="/admin/css/admin.css"/>
+</head>
+<body>
+  <div id="toast-container"></div>
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="/images/logo.svg" alt="VPS"/>
+        <h1>Espace Admin</h1>
+        <p>Van Prestige Service</p>
+      </div>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Adresse email</label>
+          <input type="email" id="email" placeholder="admin@vanprestige.com" required autocomplete="email"/>
+        </div>
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password"/>
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn">Se connecter</button>
+      </form>
+      <p class="login-hint">Accès réservé aux administrateurs autorisés</p>
+    </div>
+  </div>
+  <script src="/admin/js/admin.js"></script>
+  <script>
+    // Redirect if already logged in
+    if (getToken()) window.location.href = '/admin/dashboard.html';
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'Connexion...';
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast(data.error || 'Identifiants incorrects.', 'error');
+          btn.disabled = false; btn.textContent = 'Se connecter'; return;
+        }
+        localStorage.setItem('vps_token', data.token);
+        localStorage.setItem('vps_admin', JSON.stringify(data.admin));
+        showToast('Connexion réussie !', 'success');
+        setTimeout(() => window.location.href = '/admin/dashboard.html', 700);
+      } catch {
+        showToast('Erreur réseau. Réessayez.', 'error');
+        btn.disabled = false; btn.textContent = 'Se connecter';
+      }
+    }
+  </script>
+</body>
+</html>

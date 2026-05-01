@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Réservations – Van Prestige Service</title>
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg"/>
+  <link rel="stylesheet" href="/admin/css/admin.css"/>
+</head>
+<body>
+  <div id="toast-container"></div>
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="/images/logo.svg" alt="VPS"/>
+      <div class="logo-text">
+        <span class="logo-main">Van Prestige</span>
+        <span class="logo-sub">Service</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Navigation</div>
+        <a href="/admin/dashboard.html" class="nav-item"><span class="nav-icon">📊</span> Tableau de bord</a>
+        <a href="/admin/reservations.html" class="nav-item active"><span class="nav-icon">📋</span> Réservations</a>
+        <a href="/admin/users.html" class="nav-item" id="usersNavLink"><span class="nav-icon">👥</span> Utilisateurs</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Accès rapide</div>
+        <a href="/" target="_blank" class="nav-item"><span class="nav-icon">🌐</span> Voir le site</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar" id="sidebarAvatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarUserName">Admin</div>
+          <div class="user-role" id="sidebarUserRole">Administrateur</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">🚪 Se déconnecter</button>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="topbar-title"><h1>Réservations</h1><span id="resCount">Chargement...</span></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="card">
+        <div class="card-header" style="flex-wrap:wrap;gap:1rem">
+          <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFilter('')" id="f-all">Toutes</button>
+            <button class="filter-btn" onclick="setFilter('pending')" id="f-pending">⏳ En attente</button>
+            <button class="filter-btn" onclick="setFilter('confirmed')" id="f-confirmed">✅ Confirmées</button>
+            <button class="filter-btn" onclick="setFilter('cancelled')" id="f-cancelled">❌ Annulées</button>
+            <button class="filter-btn" onclick="setFilter('completed')" id="f-completed">🏁 Terminées</button>
+          </div>
+          <input type="search" class="search-input" id="searchInput" placeholder="🔍 Nom, référence, téléphone..." oninput="debounceSearch()"/>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Référence</th>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Date trajet</th>
+                <th>Passagers</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="resBody">
+              <tr><td colspan="7" class="table-loading"><div class="spinner"></div> Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="paginationBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail / Status Modal -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Détail de la réservation</span>
+        <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+      </div>
+      <div id="detailContent"></div>
+      <div class="modal-actions" id="detailActions"></div>
+    </div>
+  </div>
+
+  <script src="/admin/js/admin.js"></script>
+  <script>
+    if (!requireAuth()) {}
+    populateSidebarUser();
+    initSidebar();
+    closeOnOutsideClick('detailModal');
+
+    let currentFilter = '';
+    let currentPage = 1;
+    let searchVal = '';
+    let searchTimer;
+    let allReservations = [];
+
+    function setFilter(val) {
+      currentFilter = val;
+      currentPage = 1;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('f-' + (val || 'all'))?.classList.add('active');
+      loadReservations();
+    }
+
+    function debounceSearch() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        searchVal = document.getElementById('searchInput').value.trim();
+        currentPage = 1;
+        loadReservations();
+      }, 350);
+    }
+
+    async function loadReservations() {
+      const tbody = document.getElementById('resBody');
+      tbody.innerHTML = '<tr><td colspan="7" class="table-loading"><div class="spinner"></div> Chargement...</td></tr>';
+      let url = `/api/admin/reservations?page=${currentPage}&limit=15`;
+      if (currentFilter) url += `&status=${currentFilter}`;
+      if (searchVal) url += `&search=${encodeURIComponent(searchVal)}`;
+      const res = await api(url);
+      if (!res) return;
+      const d = await res.json();
+      const total = d.total || 0;
+      document.getElementById('resCount').textContent = `${total} réservation${total !== 1 ? 's' : ''}`;
+      if (!d.reservations || !d.reservations.length) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📭</div><p>Aucune réservation trouvée</p></div></td></tr>';
+        document.getElementById('paginationBar').innerHTML = '';
+        return;
+      }
+      allReservations = d.reservations;
+      tbody.innerHTML = d.reservations.map(r => `
+        <tr>
+          <td><span class="ref-code">${r.booking_ref}</span></td>
+          <td><div class="client-info"><div class="name">${r.client_name}</div><div class="phone">${r.client_phone}</div></div></td>
+          <td>${r.service_type}</td>
+          <td><span style="font-size:0.82rem">${r.pickup_date}<br><span style="color:var(--gray)">${r.pickup_time}</span></span></td>
+          <td style="text-align:center">${r.passengers}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn btn-outline btn-sm" onclick="viewDetail(${r.id})">👁</button>
+              ${r.status === 'pending' ? `
+                <button class="btn btn-success btn-sm" onclick="changeStatus(${r.id},'confirmed')" title="Confirmer">✅</button>
+                <button class="btn btn-danger btn-sm" onclick="changeStatus(${r.id},'cancelled')" title="Annuler">❌</button>
+              ` : ''}
+              ${r.status === 'confirmed' ? `
+                <button class="btn btn-outline btn-sm" onclick="changeStatus(${r.id},'completed')" title="Terminer">🏁</button>
+                <button class="btn btn-danger btn-sm" onclick="changeStatus(${r.id},'cancelled')" title="Annuler">❌</button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      renderPagination(d.total, d.page, d.pages);
+    }
+
+    function renderPagination(total, page, pages) {
+      const bar = document.getElementById('paginationBar');
+      if (pages <= 1) { bar.innerHTML = ''; return; }
+      let html = `<button class="pg-btn" onclick="goPage(${page-1})" ${page<=1?'disabled':''}>‹</button>`;
+      for (let i = 1; i <= pages; i++) {
+        if (i === 1 || i === pages || Math.abs(i - page) <= 2) {
+          html += `<button class="pg-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+        } else if (Math.abs(i - page) === 3) {
+          html += `<span class="pg-info">…</span>`;
+        }
+      }
+      html += `<button class="pg-btn" onclick="goPage(${page+1})" ${page>=pages?'disabled':''}>›</button>`;
+      html += `<span class="pg-info">${total} résultat${total!==1?'s':''}</span>`;
+      bar.innerHTML = html;
+    }
+
+    function goPage(p) { currentPage = p; loadReservations(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    async function changeStatus(id, status) {
+      const res = await api(`/api/admin/reservations/${id}/status`, {
+        method: 'PATCH', body: JSON.stringify({ status })
+      });
+      if (!res) return;
+      if (res.ok) { showToast('Statut mis à jour.', 'success'); loadReservations(); }
+      else showToast('Erreur.', 'error');
+    }
+
+    function viewDetail(id) {
+      const r = allReservations.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById('detailContent').innerHTML = `
+        <div class="detail-grid">
+          <div class="detail-row"><span class="detail-label">Référence</span><span class="detail-value ref-code">${r.booking_ref}</span></div>
+          <div class="detail-row"><span class="detail-label">Statut</span><span class="detail-value">${statusBadge(r.status)}</span></div>
+          <div class="detail-row"><span class="detail-label">Service</span><span class="detail-value">${r.service_type}</span></div>
+          <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${r.pickup_date} à ${r.pickup_time}</span></div>
+          <div class="detail-row"><span class="detail-label">Départ</span><span class="detail-value">${r.pickup_addr}</span></div>
+          <div class="detail-row"><span class="detail-label">Arrivée</span><span class="detail-value">${r.dropoff_addr}</span></div>
+          <div class="detail-row"><span class="detail-label">Passagers</span><span class="detail-value">${r.passengers}</span></div>
+          <div class="detail-row"><span class="detail-label">Client</span><span class="detail-value">${r.client_name}</span></div>
+          <div class="detail-row"><span class="detail-label">Téléphone</span><span class="detail-value">${r.client_phone}</span></div>
+          ${r.client_email ? `<div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${r.client_email}</span></div>` : ''}
+          ${r.notes ? `<div class="detail-row"><span class="detail-label">Notes</span><span class="detail-value">${r.notes}</span></div>` : ''}
+          <div class="detail-row"><span class="detail-label">Créée le</span><span class="detail-value">${formatDateTime(r.created_at)}</span></div>
+        </div>`;
+      const actions = document.getElementById('detailActions');
+      actions.innerHTML = '';
+      if (r.status === 'pending') {
+        actions.innerHTML += `<button class="btn btn-success" onclick="changeStatus(${r.id},'confirmed');closeModal('detailModal')">✅ Confirmer</button>`;
+        actions.innerHTML += `<button class="btn btn-danger" onclick="changeStatus(${r.id},'cancelled');closeModal('detailModal')">❌ Annuler</button>`;
+      }
+      if (r.status === 'confirmed') {
+        actions.innerHTML += `<button class="btn btn-outline" onclick="changeStatus(${r.id},'completed');closeModal('detailModal')">🏁 Terminer</button>`;
+        actions.innerHTML += `<button class="btn btn-danger" onclick="changeStatus(${r.id},'cancelled');closeModal('detailModal')">❌ Annuler</button>`;
+      }
+      actions.innerHTML += `<button class="btn btn-ghost" onclick="closeModal('detailModal')">Fermer</button>`;
+      openModal('detailModal');
+    }
+
+    loadReservations();
+  </script>
+</body>
+</html>

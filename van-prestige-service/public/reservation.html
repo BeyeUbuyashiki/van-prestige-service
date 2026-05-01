@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Réservation – Van Prestige Service</title>
+  <link rel="icon" type="image/svg+xml" href="/images/logo.svg"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <style>
+    .res-hero {
+      min-height: 38vh;
+      background: linear-gradient(135deg, var(--navy) 0%, #162040 50%, #1a0a00 100%),
+                  url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=1600&q=80') center/cover;
+      background-blend-mode: multiply;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 6rem 1rem 3rem;
+      position: relative; overflow: hidden;
+    }
+    .res-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.08) 0%, transparent 70%);
+    }
+    .res-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.5rem); color: var(--white); margin-bottom: 0.5rem; }
+    .res-hero p { color: var(--gold); font-size: 1rem; letter-spacing: 2px; text-transform: uppercase; }
+    .res-container { max-width: 820px; margin: -2rem auto 4rem; padding: 0 1.5rem; position: relative; z-index: 10; }
+    .res-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(10px);
+    }
+    .step-bar { display: flex; justify-content: center; gap: 0; margin-bottom: 2.5rem; position: relative; }
+    .step-bar::before { content: ''; position: absolute; top: 20px; left: 20%; right: 20%; height: 2px; background: rgba(201,168,76,0.2); z-index: 0; }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; flex: 1; max-width: 200px; position: relative; z-index: 1; }
+    .step-num { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(201,168,76,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; color: var(--gray); background: var(--navy); transition: all 0.3s; }
+    .step.active .step-num, .step.done .step-num { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
+    .step.done .step-num { background: var(--gold); color: var(--navy); }
+    .step-label { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+    .step.active .step-label { color: var(--gold); }
+    .form-section { display: none; animation: fadeInUp 0.4s ease; }
+    .form-section.active { display: block; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--white); margin-bottom: 0.25rem; }
+    .section-sub { color: var(--gray); font-size: 0.85rem; margin-bottom: 2rem; }
+    .service-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 2rem; }
+    @media(max-width:580px){ .service-grid { grid-template-columns: 1fr; } }
+    .service-card {
+      border: 2px solid rgba(201,168,76,0.2);
+      border-radius: 14px; padding: 1.5rem 1rem; text-align: center; cursor: pointer;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .service-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent); opacity: 0; transition: opacity 0.3s; }
+    .service-card:hover::before, .service-card.selected::before { opacity: 1; }
+    .service-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+    .service-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .service-card h3 { font-size: 0.95rem; color: var(--white); margin-bottom: 0.35rem; }
+    .service-card p { font-size: 0.78rem; color: var(--gray); line-height: 1.4; }
+    .service-card .checkmark { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: var(--gold); color: var(--navy); display: none; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
+    .service-card.selected .checkmark { display: flex; }
+    .form-row { display: grid; gap: 1rem; margin-bottom: 1rem; }
+    .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media(max-width:580px){ .form-row.cols-2, .form-row.cols-3 { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.8rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+    .form-group label span.req { color: var(--gold); }
+    .form-group input, .form-group select, .form-group textarea {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 10px; padding: 0.75rem 1rem; color: var(--white); font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color 0.3s;
+      width: 100%; box-sizing: border-box;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+    .form-group input.error, .form-group select.error { border-color: #E53E3E; }
+    .form-group .err-msg { font-size: 0.75rem; color: #FC8181; display: none; }
+    .form-group .err-msg.show { display: block; }
+    select option { background: #0B1426; }
+    .pax-selector { display: flex; align-items: center; gap: 1rem; }
+    .pax-btn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(201,168,76,0.4); background: transparent; color: var(--gold); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .pax-btn:hover { background: rgba(201,168,76,0.1); }
+    .pax-count { font-size: 1.2rem; color: var(--white); font-weight: 600; min-width: 30px; text-align: center; }
+    .van-info { background: rgba(201,168,76,0.05); border: 1px solid rgba(201,168,76,0.15); border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
+    .van-info .van-icon { font-size: 1.8rem; }
+    .van-info .van-text h4 { color: var(--gold); font-size: 0.95rem; margin-bottom: 0.15rem; }
+    .van-info .van-text p { color: var(--gray); font-size: 0.8rem; }
+    .summary-box {
+      background: rgba(201,168,76,0.04);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 14px; padding: 1.5rem; margin-bottom: 2rem;
+    }
+    .summary-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row .label { color: var(--gray); }
+    .summary-row .value { color: var(--white); text-align: right; max-width: 60%; }
+    .btn-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 2rem; }
+    .btn-back { background: transparent; border: 1px solid rgba(201,168,76,0.3); color: var(--gold); padding: 0.75rem 2rem; border-radius: 10px; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 0.9rem; transition: all 0.2s; }
+    .btn-back:hover { background: rgba(201,168,76,0.1); }
+    .btn-next { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); padding: 0.75rem 2rem; border: none; border-radius: 10px; cursor: pointer; font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 600; transition: all 0.3s; }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.3); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .success-screen { text-align: center; padding: 2rem 0; display: none; }
+    .success-screen.show { display: block; animation: fadeInUp 0.5s ease; }
+    .success-icon { font-size: 4rem; margin-bottom: 1rem; animation: bounce 0.6s ease; }
+    .success-ref { font-family: 'Courier New', monospace; font-size: 1.4rem; color: var(--gold); background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); border-radius: 10px; padding: 0.75rem 1.5rem; margin: 1rem 0; display: inline-block; letter-spacing: 2px; }
+    .copy-btn { background: transparent; border: 1px solid rgba(201,168,76,0.4); color: var(--gold); padding: 0.4rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; margin-left: 0.5rem; transition: all 0.2s; }
+    .copy-btn:hover { background: rgba(201,168,76,0.1); }
+    .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(11,20,38,0.9); z-index: 1000; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; }
+    .loading-overlay.show { display: flex; }
+    .spinner { width: 50px; height: 50px; border: 3px solid rgba(201,168,76,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="toast-container"></div>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p style="color:var(--gold);font-size:0.9rem">Envoi en cours...</p>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">
+      <img src="/images/logo.svg" alt="VPS Logo" style="width:40px;height:40px;border-radius:50%"/>
+      <span class="logo-text"><span class="logo-main">Van Prestige</span><span class="logo-sub">Service</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/#services">Services</a>
+      <a href="/#van">Notre Van</a>
+      <a href="/#contact">Contact</a>
+      <a href="/reservation.html" class="nav-cta active">Réserver</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="res-hero">
+    <div>
+      <p>✦ Réservation en ligne ✦</p>
+      <h1>Réservez votre <span class="gold">trajet</span></h1>
+    </div>
+  </div>
+
+  <div class="res-container">
+    <div class="res-card">
+      <!-- Step bar -->
+      <div class="step-bar">
+        <div class="step active" id="step1">
+          <div class="step-num">1</div>
+          <div class="step-label">Service</div>
+        </div>
+        <div class="step" id="step2">
+          <div class="step-num">2</div>
+          <div class="step-label">Itinéraire</div>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-num">3</div>
+          <div class="step-label">Contact</div>
+        </div>
+        <div class="step" id="step4">
+          <div class="step-num">4</div>
+          <div class="step-label">Confirmation</div>
+        </div>
+      </div>
+
+      <!-- SUCCESS SCREEN -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">🎉</div>
+        <h2 style="font-family:'Playfair Display',serif;color:var(--white);font-size:1.8rem;margin-bottom:0.5rem">Réservation confirmée !</h2>
+        <p style="color:var(--gray);margin-bottom:1rem">Votre demande a été enregistrée avec succès. Notre équipe vous contactera rapidement pour confirmer les détails.</p>
+        <div>
+          <span id="displayRef" class="success-ref">VPS-00000-XXXXX</span>
+          <button class="copy-btn" onclick="copyRef()">📋 Copier</button>
+        </div>
+        <p style="color:var(--gray);font-size:0.8rem;margin-top:1rem">Conservez cette référence pour suivre votre réservation</p>
+        <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap">
+          <a href="/" class="btn-back" style="text-decoration:none;display:inline-block">← Retour à l'accueil</a>
+          <button class="btn-next" onclick="checkMyRes()">Suivre ma réservation</button>
+        </div>
+      </div>
+
+      <!-- STEP 1: Service -->
+      <div class="form-section active" id="section1">
+        <h2 class="section-title">Choisissez votre service</h2>
+        <p class="section-sub">Sélectionnez le type de prestation souhaitée</p>
+        <div class="service-grid">
+          <div class="service-card" onclick="selectService('chauffeur')" data-value="chauffeur">
+            <div class="checkmark">✓</div>
+            <div class="icon">🚘</div>
+            <h3>Chauffeur Privé</h3>
+            <p>Déplacements personnels et professionnels avec chauffeur attitré</p>
+          </div>
+          <div class="service-card" onclick="selectService('aeroport')" data-value="aeroport">
+            <div class="checkmark">✓</div>
+            <div class="icon">✈️</div>
+            <h3>Transfert Aéroport</h3>
+            <p>Navette confort depuis/vers l'aéroport international Blaise Diagne</p>
+          </div>
+          <div class="service-card" onclick="selectService('vip')" data-value="vip">
+            <div class="checkmark">✓</div>
+            <div class="icon">👑</div>
+            <h3>Voyage VIP</h3>
+            <p>Déplacements longue distance ou événements en toute exclusivité</p>
+          </div>
+        </div>
+        <p class="err-msg" id="serviceErr" style="font-size:0.8rem;color:#FC8181;display:none">Veuillez sélectionner un service.</p>
+        <div class="btn-row" style="justify-content:flex-end">
+          <button class="btn-next" onclick="goStep(2)">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Itinerary -->
+      <div class="form-section" id="section2">
+        <h2 class="section-title">Détails du trajet</h2>
+        <p class="section-sub">Renseignez les informations de votre déplacement</p>
+        <div class="van-info">
+          <div class="van-icon">🚐</div>
+          <div class="van-text">
+            <h4>Mercedes Van Jetclass — 7 places</h4>
+            <p>Intérieur cuir premium · Climatisation · WiFi · Chargeurs USB</p>
+          </div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Date de départ <span class="req">*</span></label>
+            <input type="date" id="pickupDate" min=""/>
+            <span class="err-msg" id="dateErr">Veuillez sélectionner une date.</span>
+          </div>
+          <div class="form-group">
+            <label>Heure de départ <span class="req">*</span></label>
+            <input type="time" id="pickupTime"/>
+            <span class="err-msg" id="timeErr">Veuillez indiquer une heure.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adresse de départ <span class="req">*</span></label>
+            <input type="text" id="pickupAddr" placeholder="Ex : Aéroport AIBD, Dakar"/>
+            <span class="err-msg" id="pickupErr">Veuillez indiquer l'adresse de départ.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adresse d'arrivée <span class="req">*</span></label>
+            <input type="text" id="dropoffAddr" placeholder="Ex : Hôtel King Fahd Palace, Dakar"/>
+            <span class="err-msg" id="dropoffErr">Veuillez indiquer l'adresse d'arrivée.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre de passagers <span class="req">*</span></label>
+            <div class="pax-selector">
+              <button class="pax-btn" onclick="changePax(-1)">−</button>
+              <span class="pax-count" id="paxCount">1</span>
+              <button class="pax-btn" onclick="changePax(1)">+</button>
+              <span style="color:var(--gray);font-size:0.82rem;margin-left:0.5rem">(max 7)</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Notes / Demandes spéciales</label>
+            <textarea id="notes" rows="3" placeholder="Bagages, besoins particuliers, heure de vol..."></textarea>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(1)">← Retour</button>
+          <button class="btn-next" onclick="goStep(3)">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Contact -->
+      <div class="form-section" id="section3">
+        <h2 class="section-title">Vos coordonnées</h2>
+        <p class="section-sub">Nous vous contacterons pour confirmer votre réservation</p>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Prénom <span class="req">*</span></label>
+            <input type="text" id="firstName" placeholder="Aminata"/>
+            <span class="err-msg" id="firstNameErr">Champ requis.</span>
+          </div>
+          <div class="form-group">
+            <label>Nom <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Diallo"/>
+            <span class="err-msg" id="lastNameErr">Champ requis.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Téléphone <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="+221 77 000 00 00"/>
+            <span class="err-msg" id="phoneErr">Numéro invalide.</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email (optionnel)</label>
+            <input type="email" id="email" placeholder="exemple@email.com"/>
+            <span class="err-msg" id="emailErr">Email invalide.</span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(2)">← Retour</button>
+          <button class="btn-next" onclick="goStep(4)">Récapitulatif →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Summary -->
+      <div class="form-section" id="section4">
+        <h2 class="section-title">Récapitulatif</h2>
+        <p class="section-sub">Vérifiez les informations avant de confirmer</p>
+        <div class="summary-box" id="summaryBox"></div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(3)">← Modifier</button>
+          <button class="btn-next" id="submitBtn" onclick="submitReservation()">✓ Confirmer la réservation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer simple -->
+  <footer style="text-align:center;padding:2rem;border-top:1px solid rgba(201,168,76,0.1);color:var(--gray);font-size:0.82rem">
+    © 2024 Van Prestige Service · PMS Shipping · Dakar, Sénégal
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    let currentStep = 1;
+    let selectedService = '';
+    let pax = 1;
+
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('pickupDate').min = today;
+
+    const serviceLabels = { chauffeur: 'Chauffeur Privé', aeroport: 'Transfert Aéroport', vip: 'Voyage VIP' };
+
+    function selectService(val) {
+      selectedService = val;
+      document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+      document.querySelector(`[data-value="${val}"]`).classList.add('selected');
+      document.getElementById('serviceErr').style.display = 'none';
+    }
+
+    function changePax(delta) {
+      pax = Math.max(1, Math.min(7, pax + delta));
+      document.getElementById('paxCount').textContent = pax;
+    }
+
+    function goStep(n) {
+      if (n > currentStep) {
+        if (!validateStep(currentStep)) return;
+      }
+      document.getElementById('section' + currentStep).classList.remove('active');
+      document.getElementById('step' + currentStep).classList.remove('active');
+      if (n > currentStep) document.getElementById('step' + currentStep).classList.add('done');
+      else document.getElementById('step' + currentStep).classList.remove('done');
+      currentStep = n;
+      document.getElementById('section' + currentStep).classList.add('active');
+      document.getElementById('step' + currentStep).classList.add('active');
+      document.getElementById('step' + currentStep).classList.remove('done');
+      if (n === 4) buildSummary();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep(step) {
+      let valid = true;
+      if (step === 1) {
+        if (!selectedService) {
+          document.getElementById('serviceErr').style.display = 'block';
+          valid = false;
+        }
+      }
+      if (step === 2) {
+        const date = document.getElementById('pickupDate').value;
+        const time = document.getElementById('pickupTime').value;
+        const pu = document.getElementById('pickupAddr').value.trim();
+        const do_ = document.getElementById('dropoffAddr').value.trim();
+        if (!date) { showErr('pickupDate','dateErr'); valid = false; }
+        else { clearErr('pickupDate','dateErr'); }
+        if (!time) { showErr('pickupTime','timeErr'); valid = false; }
+        else { clearErr('pickupTime','timeErr'); }
+        if (!pu) { showErr('pickupAddr','pickupErr'); valid = false; }
+        else { clearErr('pickupAddr','pickupErr'); }
+        if (!do_) { showErr('dropoffAddr','dropoffErr'); valid = false; }
+        else { clearErr('dropoffAddr','dropoffErr'); }
+      }
+      if (step === 3) {
+        const fn = document.getElementById('firstName').value.trim();
+        const ln = document.getElementById('lastName').value.trim();
+        const ph = document.getElementById('phone').value.trim();
+        const em = document.getElementById('email').value.trim();
+        if (!fn) { showErr('firstName','firstNameErr'); valid = false; } else clearErr('firstName','firstNameErr');
+        if (!ln) { showErr('lastName','lastNameErr'); valid = false; } else clearErr('lastName','lastNameErr');
+        if (!ph || ph.length < 8) { showErr('phone','phoneErr'); valid = false; } else clearErr('phone','phoneErr');
+        if (em && !em.includes('@')) { showErr('email','emailErr'); valid = false; } else clearErr('email','emailErr');
+      }
+      return valid;
+    }
+
+    function showErr(fieldId, errId) {
+      document.getElementById(fieldId)?.classList.add('error');
+      const e = document.getElementById(errId);
+      if (e) e.classList.add('show');
+    }
+    function clearErr(fieldId, errId) {
+      document.getElementById(fieldId)?.classList.remove('error');
+      const e = document.getElementById(errId);
+      if (e) e.classList.remove('show');
+    }
+
+    function buildSummary() {
+      const date = document.getElementById('pickupDate').value;
+      const time = document.getElementById('pickupTime').value;
+      const pickup = document.getElementById('pickupAddr').value.trim();
+      const dropoff = document.getElementById('dropoffAddr').value.trim();
+      const fn = document.getElementById('firstName').value.trim();
+      const ln = document.getElementById('lastName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const notes = document.getElementById('notes').value.trim();
+      const rows = [
+        { label: 'Service', value: serviceLabels[selectedService] || selectedService },
+        { label: 'Véhicule', value: 'Mercedes Van Jetclass' },
+        { label: 'Date & Heure', value: `${date} à ${time}` },
+        { label: 'Départ', value: pickup },
+        { label: 'Arrivée', value: dropoff },
+        { label: 'Passagers', value: `${pax} passager${pax>1?'s':''}` },
+        { label: 'Client', value: `${fn} ${ln}` },
+        { label: 'Téléphone', value: phone },
+      ];
+      if (email) rows.push({ label: 'Email', value: email });
+      if (notes) rows.push({ label: 'Notes', value: notes });
+      document.getElementById('summaryBox').innerHTML = rows.map(r =>
+        `<div class="summary-row"><span class="label">${r.label}</span><span class="value">${r.value}</span></div>`
+      ).join('');
+    }
+
+    async function submitReservation() {
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      document.getElementById('loadingOverlay').classList.add('show');
+      const payload = {
+        service_type: serviceLabels[selectedService] || selectedService,
+        pickup_date: document.getElementById('pickupDate').value,
+        pickup_time: document.getElementById('pickupTime').value,
+        pickup_addr: document.getElementById('pickupAddr').value.trim(),
+        dropoff_addr: document.getElementById('dropoffAddr').value.trim(),
+        passengers: pax,
+        client_name: `${document.getElementById('firstName').value.trim()} ${document.getElementById('lastName').value.trim()}`,
+        client_phone: document.getElementById('phone').value.trim(),
+        client_email: document.getElementById('email').value.trim() || null,
+        notes: document.getElementById('notes').value.trim() || null,
+      };
+      try {
+        const res = await fetch('/api/reservations', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        document.getElementById('loadingOverlay').classList.remove('show');
+        if (!res.ok) { showToast(data.error || 'Erreur lors de la réservation.', 'error'); btn.disabled = false; return; }
+        document.getElementById('displayRef').textContent = data.booking_ref;
+        document.querySelector('.res-card').querySelector('.step-bar').style.display = 'none';
+        document.getElementById('section4').classList.remove('active');
+        document.getElementById('successScreen').classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        showToast('Une erreur réseau est survenue.', 'error');
+        btn.disabled = false;
+      }
+    }
+
+    function copyRef() {
+      const ref = document.getElementById('displayRef').textContent;
+      navigator.clipboard.writeText(ref).then(() => showToast('Référence copiée !', 'success'));
+    }
+
+    function checkMyRes() {
+      const ref = document.getElementById('displayRef').textContent;
+      window.location.href = '/?ref=' + encodeURIComponent(ref) + '#check';
+    }
+  </script>
+</body>
+</html>
